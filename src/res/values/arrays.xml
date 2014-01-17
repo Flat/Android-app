@@ -36,4 +36,20 @@
 		<item>Ghostlyy</item>
 		<item>UltraDerp</item>
 	</string-array>
+	<string-array name="sleepTimer">
+	    <item>Off</item>
+	    <item>15 Minutes</item>
+	    <item>30 Minutes</item>
+	    <item>60 Minutes</item>
+	    <item>90 Minutes</item>
+	    <item>120 Minutes</item>
+	</string-array>
+	<string-array name="sleepTimerValues">
+	    <item>Off</item>
+	    <item>15</item>
+	    <item>30</item>
+	    <item>60</item>
+	    <item>90</item>
+	    <item>120</item>
+	</string-array>
 </resources>
