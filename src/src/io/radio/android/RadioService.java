@@ -13,17 +13,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.RemoteViews;
@@ -53,6 +57,8 @@ public class RadioService extends Service implements OnPreparedListener,
 
 	public boolean apiToastDisplayedOnce = false;
 	
+	public CountDownTimer tSleepTimer;
+	
 	public BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -78,6 +84,9 @@ public class RadioService extends Service implements OnPreparedListener,
 				int state = intent.getIntExtra("state", -1);
 				if (state == 0)
 					stopPlayer();
+			}
+			if (intent.getAction().equals("update timer")) {
+				updateTimer();
 			}
 		}
 	};
@@ -182,6 +191,7 @@ public class RadioService extends Service implements OnPreparedListener,
 		filter.addAction("stop");
 		filter.addAction("api update");
 		filter.addAction("api fail");
+		filter.addAction("update timer");
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
 		registerReceiver(receiver, filter);
 	}
@@ -235,6 +245,9 @@ public class RadioService extends Service implements OnPreparedListener,
 				// Whatever...
 			}
 		}
+		if(tSleepTimer != null){
+			tSleepTimer.cancel();
+		}
 	}
 
 	public static void sendCommand(Context context, int command) {
@@ -264,6 +277,8 @@ public class RadioService extends Service implements OnPreparedListener,
 				// Whatever...
 			}
 		}
+		updateTimer();
+		tSleepTimer.start();
 	}
 
 	public Messenger getMessenger() {
@@ -388,5 +403,34 @@ public class RadioService extends Service implements OnPreparedListener,
 				AppWidgetManager.getInstance(getApplicationContext()), true,
 				"", -1, -1);
 	}
+	public void updateTimer(){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		String timerSetting = prefs.getString("pref_sleepTimer", "Off");
+		if (!timerSetting.equals("Off")){
+			createNewTimer(Long.parseLong(timerSetting)* 60 * 1000);
+			tSleepTimer.start();
+		}
+		else if(timerSetting.equals("Off")){
+			tSleepTimer.cancel();
+		}
+	}
+	public void createNewTimer(long timeInMillis) {
+	       if(tSleepTimer != null) {
+	         tSleepTimer.cancel();
+	       }
+	       tSleepTimer = new CountDownTimer(timeInMillis, 1000) {
+	       @Override
+	       public void onTick(final long millisUntilFinished) {
+	       }
 
+	       @Override
+	       public void onFinish() {
+	    	   SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+	    	   Editor editor = prefs.edit();
+	    	   editor.putString("pref_sleepTimer", "Off");
+	    	   editor.commit();
+	    	   stopPlayer();
+	       }
+	       };
+	}
 }
