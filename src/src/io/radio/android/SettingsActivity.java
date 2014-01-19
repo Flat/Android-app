@@ -65,11 +65,12 @@ public class SettingsActivity extends PreferenceActivity{
 				String key) {
 			 if (key.equals("pref_sleepTimer")) {
 		            Preference prefSleepTimer = findPreference(key);
-		            prefSleepTimer.setSummary(sharedPreferences.getString(key, "") + " Minutes");
 		            if(!sharedPreferences.getString(key, "Off").equals("Off")){
 		            	createNewTimer(Long.parseLong(sharedPreferences.getString(key, "")) * 60 * 1000);
+		            	prefSleepTimer.setSummary(sharedPreferences.getString(key, "") + " Minutes");
 		            }
 		            else if(sharedPreferences.getString(key, "Off").equals("Off")){
+		            	prefSleepTimer.setSummary(sharedPreferences.getString(key, ""));
 		            	if(tSleepTimer != null) {
 		   		         tSleepTimer.cancel();
 		   		       }
