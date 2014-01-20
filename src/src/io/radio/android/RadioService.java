@@ -278,7 +278,9 @@ public class RadioService extends Service implements OnPreparedListener,
 			}
 		}
 		updateTimer();
-		tSleepTimer.start();
+		if(tSleepTimer != null){
+			tSleepTimer.start();	
+		}
 	}
 
 	public Messenger getMessenger() {
