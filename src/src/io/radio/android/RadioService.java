@@ -401,7 +401,9 @@ public class RadioService extends Service implements OnPreparedListener,
 		unregisterReceiver(receiver);
 		updateTimer.cancel();
 		isRunning = false;
-		resetTimer();
+		if(tSleepTimer != null){
+			tSleepTimer.cancel();
+		}
 		RadioWidgetProvider.updateWidget(getApplicationContext(),
 				AppWidgetManager.getInstance(getApplicationContext()), true,
 				"", -1, -1);
@@ -428,21 +430,8 @@ public class RadioService extends Service implements OnPreparedListener,
 
 	       @Override
 	       public void onFinish() {
-	    	   SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-	    	   Editor editor = prefs.edit();
-	    	   editor.putString("pref_sleepTimer", "Off");
-	    	   editor.commit();
 	    	   stopPlayer();
 	       }
 	       };
-	}
-	public void resetTimer(){
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-	    	Editor editor = prefs.edit();
-	    	editor.putString("pref_sleepTimer", "Off");
-	    	editor.commit();
-	    	if(tSleepTimer != null){
-			tSleepTimer.cancel();
-		}
 	}
 }

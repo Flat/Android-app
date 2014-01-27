@@ -10,6 +10,6 @@
             <CheckBoxPreference android:title="dB Bar Graph" android:summary="Enable the dB Bar Graph (still in development)" android:key="dBGraphEnabled" android:defaultValue="false"/>
         </PreferenceCategory>
         <PreferenceCategory android:title="Other Settings">
-            <ListPreference android:title="Sleep Timer" android:summary="Set sleep timer" android:key="pref_sleepTimer" android:entries="@array/sleepTimer" android:entryValues="@array/sleepTimerValues" android:defaultValue="Off" android:persistent="true"/>
+            <ListPreference android:title="Standby Mode" android:summary="Stops playback after set time" android:key="pref_sleepTimer" android:entries="@array/sleepTimer" android:entryValues="@array/sleepTimerValues" android:defaultValue="Off" android:persistent="true"/>
         </PreferenceCategory>
     </PreferenceScreen>
